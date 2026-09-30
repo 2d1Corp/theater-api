@@ -12,19 +12,19 @@ from theatre.serializers import (
 
 
 class GenreViewSet(viewsets.ModelViewSet):
-    queryset = Genre.objects.all()
+    queryset = Genre.objects.order_by("id")
     serializer_class = GenreSerializer
     permission_classes = [IsAdminOrReadOnly]
 
 
 class ActorViewSet(viewsets.ModelViewSet):
-    queryset = Actor.objects.all()
+    queryset = Actor.objects.order_by("id")
     serializer_class = ActorSerializer
     permission_classes = [IsAdminOrReadOnly]
 
 
 class TheatreHallViewSet(viewsets.ModelViewSet):
-    queryset = TheatreHall.objects.all()
+    queryset = TheatreHall.objects.order_by("id")
     serializer_class = TheatreHallSerializer
     permission_classes = [IsAdminOrReadOnly]
 
@@ -39,7 +39,10 @@ def params_to_ints(query_string):
 
 
 class PlayViewSet(viewsets.ModelViewSet):
-    queryset = Play.objects.prefetch_related("actors", "genres")
+    queryset = Play.objects.prefetch_related(
+        "actors",
+        "genres"
+    ).order_by("id")
     serializer_class = PlaySerializer
     permission_classes = [IsAdminOrReadOnly]
 
@@ -75,7 +78,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     ).prefetch_related(
         "play__actors",
         "play__genres",
-    )
+    ).order_by("id")
     serializer_class = PerformanceSerializer
     permission_classes = [IsAdminOrReadOnly]
 
