@@ -1,13 +1,26 @@
 from django.utils.dateparse import parse_date
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 
-from theatre.models import Actor, Genre, Performance, Play, TheatreHall
+from theatre.models import (
+    Actor,
+    Genre,
+    Performance,
+    Play,
+    Reservation,
+    TheatreHall,
+)
 from theatre.permissions import IsAdminOrReadOnly
 from theatre.serializers import (
     ActorSerializer,
     GenreSerializer,
-    PerformanceListSerializer, PerformanceSerializer, PlayListSerializer, PlaySerializer, TheatreHallSerializer
+    PerformanceListSerializer,
+    PerformanceSerializer,
+    PlayListSerializer,
+    PlaySerializer,
+    ReservationSerializer,
+    TheatreHallSerializer,
 )
 
 
@@ -111,3 +124,22 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             )
 
         return queryset
+
+
+class ReservationViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Reservation.objects.filter(
+            user=self.request.user
+        ).prefetch_related(
+            "tickets__performance"
+        ).order_by("id")
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
