@@ -48,10 +48,36 @@ Or on Linux/macOS:
 source .venv/bin/activate
 ```
 
-Install dependencies and create the database tables:
+Install dependencies:
 
 ```bash
 python -m pip install -r requirements.txt
+```
+
+Copy the environment template on Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Or on Linux/macOS:
+
+```bash
+cp .env.example .env
+```
+
+Generate a unique local secret key:
+
+```bash
+python -c "import secrets; from dotenv import set_key; set_key('.env', 'SECRET_KEY', secrets.token_urlsafe(64))"
+```
+
+`.env` is ignored by Git. You can also provide `SECRET_KEY` through an environment
+variable; it takes precedence over `.env`. The API requires a nonempty key.
+
+Create the database tables:
+
+```bash
 python manage.py migrate
 ```
 
@@ -75,7 +101,19 @@ After starting the server:
 - OpenAPI schema: http://127.0.0.1:8000/api/schema/
 - Admin panel: http://127.0.0.1:8000/admin/
 
-The initial database is empty. Use the admin panel to create theatre data.
+The initial database is empty. On a fresh database, optionally load sample data:
+
+```bash
+python manage.py loaddata demo_data
+```
+
+The fixture contains two genres, two fictional actors, one hall, two plays and
+two performances (June 1 and 2, 2027). Each performance initially has 120 available
+seats. It contains no users, passwords, reservations or tickets. Create your own
+account using the instructions below, then reserve a seat for performance `1`.
+
+Use this fixture on a fresh database: its IDs can overwrite existing catalog
+records. Alternatively, create your own theatre data through the admin panel.
 
 ## Tests
 

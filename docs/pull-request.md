@@ -8,6 +8,8 @@ Implement a Theatre API portfolio project with Django REST Framework.
 - Reservations with multiple tickets and access restricted to the owner.
 - Seat validation, duplicate booking prevention and atomic reservation creation.
 - Swagger/OpenAPI documentation and local setup/access instructions.
+- Secret key loaded from the environment or an ignored local `.env` file.
+- Optional demo catalog fixture with documented `loaddata` instructions.
 
 ## Additional functionality
 
