@@ -8,6 +8,7 @@ built with Django REST Framework.
 - Manage genres, actors, theatre halls, plays and performances.
 - Filter plays by title, genres and actors.
 - Filter performances by date and plays.
+- See the available seat count for each performance.
 - Browse paginated lists.
 - Register users and authenticate using JWT.
 - Create reservations with multiple tickets.
@@ -178,6 +179,8 @@ Choose a performance from `results` and note:
 - Its `id`.
 - `theatre_hall.rows`: the number of rows.
 - `theatre_hall.seats_in_row`: the number of seats in each row.
+- `tickets_available`: the hall capacity minus tickets already reserved
+  for this performance. This count is calculated when the list is requested.
 
 If the list is empty, create theatre data using the admin panel.
 
@@ -258,3 +261,27 @@ Lists are paginated with 10 records per page:
 
 With the default SQLite database, title filtering ignores case for ASCII
 letters, but matching Cyrillic letters is case-sensitive.
+
+## Database structure
+
+![Theatre API database diagram](docs/theatre-schema.png)
+
+The editable [draw.io source](docs/theatre-schema.drawio) includes the theatre
+models, automatic many-to-many joins and booking constraints. Standard Django
+authentication tables other than User are omitted for clarity.
+
+## Browsable API screenshots
+
+These screenshots show sample local data. A fresh installation starts empty.
+
+### Performances and available seats
+
+![Performance list](docs/screenshots/performance-list.jpg)
+
+### Plays
+
+![Play list](docs/screenshots/play-list.jpg)
+
+### Theatre halls
+
+![Theatre hall list](docs/screenshots/hall-list.jpg)
