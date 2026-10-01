@@ -54,6 +54,10 @@ class PerformanceSerializer(serializers.ModelSerializer):
 class PerformanceListSerializer(PerformanceSerializer):
     play = PlayListSerializer(read_only=True)
     theatre_hall = TheatreHallSerializer(read_only=True)
+    tickets_available = serializers.IntegerField(read_only=True)
+
+    class Meta(PerformanceSerializer.Meta):
+        fields = PerformanceSerializer.Meta.fields + ["tickets_available"]
 
 
 class TicketSerializer(serializers.ModelSerializer):

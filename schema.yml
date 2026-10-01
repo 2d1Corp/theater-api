@@ -1250,11 +1250,15 @@ components:
         show_time:
           type: string
           format: date-time
+        tickets_available:
+          type: integer
+          readOnly: true
       required:
       - id
       - play
       - show_time
       - theatre_hall
+      - tickets_available
     Play:
       type: object
       properties:

@@ -1,3 +1,4 @@
+from django.db.models import Count, F
 from django.utils.dateparse import parse_date
 from rest_framework import mixins, viewsets
 from rest_framework.exceptions import ValidationError
@@ -154,6 +155,13 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             "play__actors",
             "play__genres",
         )
+        .annotate(
+            tickets_available=(
+                F("theatre_hall__rows")
+                * F("theatre_hall__seats_in_row")
+                - Count("tickets")
+            )
+        )
         .order_by("id")
     )
     serializer_class = PerformanceSerializer
@@ -170,7 +178,10 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         plays = self.request.query_params.get("plays")
 
         if show_date:
-            parsed_date = parse_date(show_date)
+            try:
+                parsed_date = parse_date(show_date)
+            except ValueError:
+                parsed_date = None
 
             if parsed_date is None:
                 raise ValidationError("Date must use YYYY-MM-DD format.")
