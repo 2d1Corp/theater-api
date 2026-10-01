@@ -4,7 +4,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-
 CREATE_USER_URL = reverse("create")
 ME_URL = reverse("manage")
 
@@ -28,22 +27,15 @@ class PublicUserApiTests(APITestCase):
             status.HTTP_201_CREATED,
         )
 
-        user = get_user_model().objects.get(
-            username=payload["username"]
-        )
+        user = get_user_model().objects.get(username=payload["username"])
 
-        self.assertTrue(
-            user.check_password(payload["password"])
-        )
+        self.assertTrue(user.check_password(payload["password"]))
         self.assertNotIn("password", response.data)
 
     def test_authentication_required_for_me(self):
         response = self.client.get(ME_URL)
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_401_UNAUTHORIZED
-        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class PrivateUserApiTests(APITestCase):
@@ -58,10 +50,7 @@ class PrivateUserApiTests(APITestCase):
     def test_retrieve_user_profile(self):
         response = self.client.get(ME_URL)
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data["username"],
             self.user.username,
@@ -89,6 +78,4 @@ class PrivateUserApiTests(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertTrue(
-            self.user.check_password(payload["password"])
-        )
+        self.assertTrue(self.user.check_password(payload["password"]))

@@ -18,7 +18,6 @@ from theatre.models import (
     Ticket,
 )
 
-
 RESERVATION_URL = reverse("reservation-list")
 
 
@@ -241,8 +240,8 @@ class ReservationApiTests(APITestCase):
 
     @patch("theatre.serializers.Ticket.objects.create")
     def test_database_conflict_returns_400_and_rolls_back(
-            self,
-            mocked_create,
+        self,
+        mocked_create,
     ):
         mocked_create.side_effect = IntegrityError
 

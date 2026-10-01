@@ -94,7 +94,6 @@ class TicketTests(TestCase):
                     reservation=self.reservation,
                 )
 
-
     def test_same_seat_for_different_performance_is_allowed(self):
         other_performance = Performance.objects.create(
             play=self.performance.play,

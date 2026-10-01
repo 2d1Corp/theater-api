@@ -6,16 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('theatre', '0001_initial'),
+        ("theatre", "0001_initial"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='theatrehall',
-            constraint=models.CheckConstraint(condition=models.Q(('rows__gte', 1)), name='rows_gte_1'),
+            model_name="theatrehall",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("rows__gte", 1)), name="rows_gte_1"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='theatrehall',
-            constraint=models.CheckConstraint(condition=models.Q(('seats_in_row__gte', 1)), name='seats_in_row_gte_1'),
+            model_name="theatrehall",
+            constraint=models.CheckConstraint(
+                condition=models.Q(("seats_in_row__gte", 1)),
+                name="seats_in_row_gte_1",
+            ),
         ),
     ]

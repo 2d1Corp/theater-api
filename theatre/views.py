@@ -73,25 +73,24 @@ def params_to_ints(query_string):
                 type=str,
                 location=OpenApiParameter.QUERY,
                 required=False,
-                description="Filter by genre IDs separated by commas, e.g. 1,2.",
+                description=(
+                    "Filter by genre IDs separated by commas, e.g. 1,2."
+                ),
             ),
             OpenApiParameter(
                 name="actors",
                 type=str,
                 location=OpenApiParameter.QUERY,
                 required=False,
-                description="Filter by actor IDs separated by commas, e.g. 1,2.",
+                description=(
+                    "Filter by actor IDs separated by commas, e.g. 1,2."
+                ),
             ),
         ],
     ),
 )
-
-
 class PlayViewSet(viewsets.ModelViewSet):
-    queryset = Play.objects.prefetch_related(
-        "actors",
-        "genres"
-    ).order_by("id")
+    queryset = Play.objects.prefetch_related("actors", "genres").order_by("id")
     serializer_class = PlaySerializer
     permission_classes = [IsAdminOrReadOnly]
 
@@ -129,28 +128,34 @@ class PlayViewSet(viewsets.ModelViewSet):
                 type=OpenApiTypes.DATE,
                 location=OpenApiParameter.QUERY,
                 required=False,
-                description="Filter by show date in YYYY-MM-DD format.",
+                description=(
+                    "Filter by show date in YYYY-MM-DD format."
+                ),
             ),
             OpenApiParameter(
                 name="plays",
                 type=str,
                 location=OpenApiParameter.QUERY,
                 required=False,
-                description="Filter by play IDs separated by commas, e.g. 1,2.",
+                description=(
+                    "Filter by play IDs separated by commas, e.g. 1,2."
+                ),
             ),
         ],
     ),
 )
-
-
 class PerformanceViewSet(viewsets.ModelViewSet):
-    queryset = Performance.objects.select_related(
-        "play",
-        "theatre_hall",
-    ).prefetch_related(
-        "play__actors",
-        "play__genres",
-    ).order_by("id")
+    queryset = (
+        Performance.objects.select_related(
+            "play",
+            "theatre_hall",
+        )
+        .prefetch_related(
+            "play__actors",
+            "play__genres",
+        )
+        .order_by("id")
+    )
     serializer_class = PerformanceSerializer
     permission_classes = [IsAdminOrReadOnly]
 
@@ -168,19 +173,13 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             parsed_date = parse_date(show_date)
 
             if parsed_date is None:
-                raise ValidationError(
-                    "Date must use YYYY-MM-DD format."
-                )
+                raise ValidationError("Date must use YYYY-MM-DD format.")
 
-            queryset = queryset.filter(
-                show_time__date=parsed_date
-            )
+            queryset = queryset.filter(show_time__date=parsed_date)
 
         if plays:
             play_ids = params_to_ints(plays)
-            queryset = queryset.filter(
-                play_id__in=play_ids
-            )
+            queryset = queryset.filter(play_id__in=play_ids)
 
         return queryset
 
@@ -194,11 +193,11 @@ class ReservationViewSet(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Reservation.objects.filter(
-            user=self.request.user
-        ).prefetch_related(
-            "tickets__performance"
-        ).order_by("id")
+        return (
+            Reservation.objects.filter(user=self.request.user)
+            .prefetch_related("tickets__performance")
+            .order_by("id")
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

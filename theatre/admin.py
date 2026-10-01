@@ -7,7 +7,7 @@ from theatre.models import (
     Play,
     Reservation,
     TheatreHall,
-    Ticket
+    Ticket,
 )
 
 admin.site.register(Actor)
@@ -17,5 +17,3 @@ admin.site.register(Play)
 admin.site.register(Performance)
 admin.site.register(Reservation)
 admin.site.register(Ticket)
-
-

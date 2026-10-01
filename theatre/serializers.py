@@ -8,7 +8,7 @@ from theatre.models import (
     Play,
     Reservation,
     TheatreHall,
-    Ticket
+    Ticket,
 )
 
 
@@ -30,7 +30,7 @@ class TheatreHallSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "rows", "seats_in_row"]
         extra_kwargs = {
             "rows": {"min_value": 1},
-            "seats_in_row": {"min_value": 1}
+            "seats_in_row": {"min_value": 1},
         }
 
 
@@ -68,9 +68,7 @@ class TicketSerializer(serializers.ModelSerializer):
         try:
             ticket.clean()
         except DjangoValidationError as error:
-            raise serializers.ValidationError(
-                error.message_dict
-            )
+            raise serializers.ValidationError(error.message_dict)
 
         return attrs
 
@@ -102,8 +100,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {
                     "tickets": (
-                        "Each seat may appear only once "
-                        "in a reservation."
+                        "Each seat may appear only once " "in a reservation."
                     )
                 }
             )
@@ -115,9 +112,7 @@ class ReservationSerializer(serializers.ModelSerializer):
 
         try:
             with transaction.atomic():
-                reservation = Reservation.objects.create(
-                    **validated_data
-                )
+                reservation = Reservation.objects.create(**validated_data)
 
                 for ticket_data in tickets_data:
                     Ticket.objects.create(
@@ -127,11 +122,7 @@ class ReservationSerializer(serializers.ModelSerializer):
 
         except IntegrityError as error:
             raise serializers.ValidationError(
-                {
-                    "tickets": (
-                        "One or more seats are already reserved."
-                    )
-                }
+                {"tickets": ("One or more seats are already reserved.")}
             ) from error
 
         return reservation

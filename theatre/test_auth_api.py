@@ -5,7 +5,6 @@ from rest_framework.test import APITestCase
 
 from theatre.models import Genre
 
-
 TOKEN_URL = reverse("token_obtain_pair")
 TOKEN_REFRESH_URL = reverse("token_refresh")
 GENRE_URL = reverse("genre-list")
@@ -38,9 +37,7 @@ class JwtApiTests(APITestCase):
 
         access_token = token_response.data["access"]
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {access_token}"
-        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
 
         genre_response = self.client.post(
             GENRE_URL,
@@ -52,9 +49,7 @@ class JwtApiTests(APITestCase):
             genre_response.status_code,
             status.HTTP_201_CREATED,
         )
-        self.assertTrue(
-            Genre.objects.filter(name="Drama").exists()
-        )
+        self.assertTrue(Genre.objects.filter(name="Drama").exists())
 
     def test_refresh_token_returns_new_access_token(self):
         token_response = self.client.post(

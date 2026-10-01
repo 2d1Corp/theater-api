@@ -39,9 +39,7 @@ class GenreApiTests(APITestCase):
             response.status_code,
             status.HTTP_403_FORBIDDEN,
         )
-        self.assertFalse(
-            Genre.objects.filter(name="Drama").exists()
-        )
+        self.assertFalse(Genre.objects.filter(name="Drama").exists())
 
     def test_staff_user_can_create_genre(self):
         self.client.force_authenticate(user=self.staff_user)
@@ -56,9 +54,7 @@ class GenreApiTests(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED,
         )
-        self.assertTrue(
-            Genre.objects.filter(name="Drama").exists()
-        )
+        self.assertTrue(Genre.objects.filter(name="Drama").exists())
 
 
 class TheatreHallApiTests(APITestCase):
