@@ -3,6 +3,13 @@ from rest_framework import mixins, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_view,
+)
+
 from theatre.models import (
     Actor,
     Genre,
@@ -51,6 +58,35 @@ def params_to_ints(query_string):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="title",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Search plays by part of the title.",
+            ),
+            OpenApiParameter(
+                name="genres",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Filter by genre IDs separated by commas, e.g. 1,2.",
+            ),
+            OpenApiParameter(
+                name="actors",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Filter by actor IDs separated by commas, e.g. 1,2.",
+            ),
+        ],
+    ),
+)
+
+
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.prefetch_related(
         "actors",
@@ -83,6 +119,29 @@ class PlayViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(actors__id__in=actor_ids)
 
         return queryset.distinct()
+
+
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="date",
+                type=OpenApiTypes.DATE,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Filter by show date in YYYY-MM-DD format.",
+            ),
+            OpenApiParameter(
+                name="plays",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Filter by play IDs separated by commas, e.g. 1,2.",
+            ),
+        ],
+    ),
+)
+
 
 class PerformanceViewSet(viewsets.ModelViewSet):
     queryset = Performance.objects.select_related(
